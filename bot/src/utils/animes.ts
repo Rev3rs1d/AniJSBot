@@ -1,4 +1,6 @@
 import { Animes } from '../models/Animes'
+import { Episodes } from '../models/Episodes'
+
 import { createConnection, Like } from 'typeorm'
 import { InlineQueryResult } from 'telegraf/typings/core/types/typegram'
 
@@ -49,5 +51,20 @@ export const getAnimeById = async (id: number |  string): Promise<Animes> => {
 	const search = await con.manager.findOne(Animes, id)
 	con.close()
 
+	return search
+}
+
+
+export const getEpisode = async (id: number, quality: string = "FHD") => {
+	const con = await createConnection()
+	const search = await con.createQueryBuilder(Episodes, "episodes")
+		.innerJoinAndSelect("episodes.anime", "anime")
+		.select(["episodes", "anime.name"])
+		.where("episodes.animeId = :id", {id})
+		.andWhere("episodes.quality = :quality", {quality})
+		.andWhere("anime.id = :id", {id})
+		.getMany()
+		
+	con.close()
 	return search
 }

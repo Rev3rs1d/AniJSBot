@@ -19,6 +19,9 @@ export class Episodes {
 	@CreateDateColumn()
 	create_at: Date
 	
+	@Column()
+	animeId!: number
+
 	@ManyToOne(() => Animes, anime => anime.episodes)
 	anime: Animes
 }
