@@ -54,17 +54,22 @@ export const getAnimeById = async (id: number |  string): Promise<Animes> => {
 	return search
 }
 
-
-export const getEpisode = async (id: number, quality: string = "FHD") => {
+export const getEpisode = async (id: number, start: number = 0, quality: string = "FHD") => {
 	const con = await createConnection()
-	const search = await con.createQueryBuilder(Episodes, "episodes")
+	const episode = await con.createQueryBuilder(Episodes, "episodes")
 		.innerJoinAndSelect("episodes.anime", "anime")
-		.select(["episodes", "anime.name"])
+		.select(["episodes", "anime.name","anime.episode_count"])
 		.where("episodes.animeId = :id", {id})
 		.andWhere("episodes.quality = :quality", {quality})
 		.andWhere("anime.id = :id", {id})
+		.skip(start)
+		.take(1)
 		.getMany()
-		
+
+	
 	con.close()
-	return search
+
+	return {
+		episode: episode.shift()
+	}
 }

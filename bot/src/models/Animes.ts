@@ -28,6 +28,9 @@ export class Animes {
 	@Column()
 	anilist_link: string
 
+	@Column()
+	episode_count: number
+	
 	@CreateDateColumn()
 	create_at: Date
 

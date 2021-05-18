@@ -19,6 +19,10 @@ export class animes1620616743946 implements MigrationInterface {
 							type: 'varchar'
 						},
 						{
+							name: 'episode_count',
+							type: 'int'
+						},
+						{
 							name: 'description',
 							type: 'varchar'
 						},
@@ -70,7 +74,7 @@ export class animes1620616743946 implements MigrationInterface {
 							type: 'int'
 						},
 						{	
-							name: 'episode_number',
+							name: 'episodes_number',
 							type: 'int'
 						},
 						{

@@ -7,7 +7,7 @@ type IAnime = {
 	genre: string;
 }
 
-const getText = ({name, description, genre}: IAnime): string => {
+export const getText = ({name, description, genre}: IAnime): string => {
 	return `*Nome*: *${name}*\n*Gênero(s)*: _${genre}_\n\n*Sinopse*: _${description}_`
 }
 
@@ -16,15 +16,17 @@ const startHandler = Composer.command("start", async ctx => {
 	const { text, from } = ctx.message
 	const { callback, url } = Markup.button
 	const isId = text.match(/\s/g)
-	
+
 	if(!isId) {
 		return ctx.replyWithMarkdown(`Olá [${from.first_name}](tg://user?id=${from.id})[ㅤ ㅤ](https://i.pinimg.com/originals/9f/52/c7/9f52c72b5c38691a69e0586cfa7425c1.png)`,
 			Markup.inlineKeyboard([[
-				callback("Buscar animes", ".."),
+				{
+					text: "Buscar animes",
+					switch_inline_query_current_chat: " "
+				},
 				callback("Notificações", "notifications")
 			],[
-				url("Canal", "https://t.me/ShuseiKagari"),
-				callback("Como usar o bot", "help")
+				url("Canal", "https://t.me/ShuseiKagari")
 			],[
 				url("Source", "https://www.github.com/Lewizh11/anijsbot")
 			]]
@@ -36,7 +38,7 @@ const startHandler = Composer.command("start", async ctx => {
 			name, image_url, genre, 
 			description, id
 		} = await getAnimeById(text.replace("/start ",""))
-
+		
 		await ctx.replyWithPhoto(image_url, {
 			caption: getText({name, description, genre}),
 			parse_mode: "Markdown",
