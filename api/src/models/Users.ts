@@ -15,6 +15,9 @@ export class Users {
 	@Column()
 	role: string;
 
+	@Column()
+	name: string;
+
 	@CreateDateColumn()
 	create_at: Date
 }

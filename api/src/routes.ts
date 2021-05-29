@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { body } from 'express-validator'
 import episodes from './controllers/EpisodesController'
-import { getToken } from './controllers/UsersController'
+import { login, create } from './controllers/UsersController'
 
 const router = Router()
 
@@ -14,7 +14,18 @@ router.post(
 		.isLength({ min: 5}),
 	body('password')
 		.isLength({ min: 5}),
-	getToken
+	login
+)
+
+router.put(
+	'/user', body('username')
+		.isLength({ min: 5}),
+	body('name')
+		.isLength({ min: 5})
+		,
+	body('password')
+		.isLength({ min: 5}),
+	create
 )
 
 export default router

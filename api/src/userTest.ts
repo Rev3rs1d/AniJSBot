@@ -11,7 +11,7 @@ import { hashSync } from 'bcrypt'
 	user.username = 'Lewiz'
 	user.role = 'admin'
 	user.password = hash
-
+	user.name = 'Lewiz'
 	await con.manager.save(user)
 
 })()
