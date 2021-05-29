@@ -24,7 +24,7 @@ const startHandler = Composer.command("start", async ctx => {
 					text: "Buscar animes",
 					switch_inline_query_current_chat: " "
 				},
-				callback("Notificações", "notifications")
+				//callback("Notificações", "notifications")
 			],[
 				url("Canal", "https://t.me/ShuseiKagari")
 			],[

@@ -12,7 +12,7 @@
 - [ ] Sistema de notificações
 - [ ] Sistema de favoritos
 
-
+    
 ```basg
 move sample.json ormconfig.json
 ``` 

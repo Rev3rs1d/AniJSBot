@@ -2,6 +2,27 @@ import { Composer, deunionize, Markup, Context } from 'telegraf'
 import { getEpisode, getAnimeById } from '../utils/animes'
 import { getText } from './startHandler'
 
+
+const splitArr = (element: any[], length): any[] =>  {
+  let index = 0
+  const arr = []
+  for (let i = 0; i < length; i++) {
+    
+    if (!arr[index])
+      arr[index] = []
+    
+    arr[index].push(element[i])
+    
+    if (arr[index].length == element)
+      index++
+  }
+  return arr
+}
+
+function* episodesMarkup(){
+
+}
+
 const utils = ({callbackQuery}: Context) => {
   const data = deunionize(callbackQuery).data!
   const { callback } = Markup.button
@@ -9,6 +30,7 @@ const utils = ({callbackQuery}: Context) => {
 
   return { animeId, callback, data }
 }
+
 
 
 const quality = async (ctx: Context) => {
@@ -102,6 +124,14 @@ const menu = async (ctx: Context) => {
 
 }
 
+const episodes = async (ctx: Context) => {
+  ctx.editMessageCaption('Selecione o seu episódio abaixo', Markup.inlineKeyboard([
+    [
+
+    ]
+  ]))
+}
+
 const mainCallbacks = Composer.on('callback_query', ctx => {
   const { data } = utils(ctx)
   const main = {
@@ -117,5 +147,8 @@ const mainCallbacks = Composer.on('callback_query', ctx => {
     console.log(message)
   }
 })
+
+
+
 
 export default mainCallbacks 

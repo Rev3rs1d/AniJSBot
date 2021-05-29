@@ -1,6 +1,6 @@
 import startHandler from './startHandler'
 import inlineQueries from './inlineQueries'
-import callback from './selectQuality'
+import callback from './callbacks'
 
 import { bot } from '../index'
 
