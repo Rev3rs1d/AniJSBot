@@ -5,27 +5,21 @@ import { login, create } from './controllers/UsersController'
 
 const router = Router()
 
-router.post('/episodes', body(
-	'username'
-).isEmail(), episodes.addEpisode)
+router.post('/episodes', body('username').isEmail(), episodes.addEpisode)
 
 router.post(
-	'/user', body('username')
-		.isLength({ min: 5}),
-	body('password')
-		.isLength({ min: 5}),
-	login
+  '/user',
+  body('username').isLength({ min: 5 }),
+  body('password').isLength({ min: 5 }),
+  login,
 )
 
 router.put(
-	'/user', body('username')
-		.isLength({ min: 5}),
-	body('name')
-		.isLength({ min: 5})
-		,
-	body('password')
-		.isLength({ min: 5}),
-	create
+  '/user',
+  body('username').isLength({ min: 5 }),
+  body('name').isLength({ min: 5 }),
+  body('password').isLength({ min: 5 }),
+  create,
 )
 
 export default router

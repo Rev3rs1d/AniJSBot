@@ -8,10 +8,11 @@ const app = express()
 app.use(express.json())
 app.use(routes)
 
-app.get("/", (_, res) => {
-	res.json({
-		message: "Esta é uma API para o dashboard do @AniJSBot. Veja a documentação dela em: https://github.com/Lewizh11/AniJsBot"
-	})
+app.get('/', (_, res) => {
+  res.json({
+    message:
+      'Esta é uma API para o dashboard do @AniJSBot. Veja a documentação dela em: https://github.com/Lewizh11/AniJsBot',
+  })
 })
 
-app.listen(PORT || 8080, () => console.log("Server listen: ", PORT || 8080))
+app.listen(PORT || 8080, () => console.log('Server listen: ', PORT || 8080))
