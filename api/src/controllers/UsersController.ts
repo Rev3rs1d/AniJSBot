@@ -29,7 +29,7 @@ const login = async (req: Request, res: Response) => {
 		username
 	})
 	
-	conn.close()
+	await conn.close()
 	
 	if(!user)
 		return res.status(400).json({
@@ -95,5 +95,6 @@ const create = async (req: Request, res: Response) => {
 
 export {
 	login,
-	create
+	create,
+//	update
 }
