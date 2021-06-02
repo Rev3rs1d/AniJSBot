@@ -6,6 +6,7 @@ import {
   loginUser,
   createUser,
   updateUser,
+  deleteUser,
 } from './controllers/UsersController'
 import auth from './etc/authUser'
 
@@ -29,13 +30,21 @@ router.put(
   createUser,
 )
 
-router.put(
-  '/editUser',
+router.patch(
+  '/user',
   body('username').isLength({ min: 5 }),
   body('newUsername').isLength({ min: 5 }),
   body('newName').isLength({ min: 5 }),
   passport.authenticate('jwt', { session: false }),
   updateUser,
+)
+
+router.delete(
+  '/user',
+  body('password').isLength({ min: 5 }),
+  body('username').isLength({ min: 5 }),
+  passport.authenticate('jwt', { session: false }),
+  deleteUser,
 )
 
 export default router

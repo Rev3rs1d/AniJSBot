@@ -85,7 +85,6 @@ export const createUser = async (req: Request, res: Response) => {
     })
   } catch ({ message }) {
     console.log(message)
-    await conn.close()
 
     return res.status(500).json({
       error: 'Error in server',
@@ -140,11 +139,48 @@ export const updateUser = async (req: Request, res: Response) => {
     })
   } catch ({ message }) {
     console.log(message)
-    await conn.close()
+
     return res
       .status(500)
       .json({ error: 'Error on server connection with database' })
   }
 }
 
-export const deleteUser = async (req: Request, res: Response) => {}
+export const deleteUser = async (req: Request, res: Response) => {
+  const errors = validationResult(req)
+
+  if (!errors.isEmpty())
+    return res.status(400).json({
+      errors: errors.array().map(({ msg, param }) => ({ msg, param })),
+    })
+
+  const { username, password } = req.body
+  const conn = await createConnection()
+  const repo = conn.getRepository(Users)
+  const user = await repo.findOne({ username })
+
+  if (!user) {
+    await conn.close()
+    return res.status(400).json({
+      error: 'User is not registered',
+    })
+  }
+
+  const compare = compareSync(password, user.password)
+
+  if (!compare) {
+    await conn.close()
+    return res.status(401).json({
+      error: 'The password is not valid for this user',
+    })
+  }
+
+  try {
+    await repo.remove(user)
+    await conn.close()
+
+    res.json({ msg: 'Account deleted' })
+  } catch ({ message }) {
+    res.status(500).json({ error: 'Server error' })
+  }
+}
