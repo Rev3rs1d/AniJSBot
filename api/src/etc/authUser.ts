@@ -11,10 +11,12 @@ export default new Strategy(
   async function (jwtPayload, done) {
     const conn = await createConnection()
     const repo = conn.getRepository(Users)
-    const user = await repo.findOne(jwtPayload.id)
+    const user = await repo.findOne(jwtPayload.id, {
+      select: ['username', 'role', 'name', 'id'],
+    })
     await conn.close()
     if (!user) return done(null, false)
 
-    return done(null, user)
+    return done(null, { id: jwtPayload })
   },
 )

@@ -78,7 +78,6 @@ export const createUser = async (req: Request, res: Response) => {
       username,
       role: 'member',
     })
-
     await conn.close()
 
     return res.status(201).json({
@@ -104,26 +103,40 @@ export const updateUser = async (req: Request, res: Response) => {
 
   const { username, newUsername, newName } = req.body
   const conn = await createConnection()
+
+  if (req.user.username != username) {
+    await conn.close()
+    return res
+      .status(401)
+      .json({ errors: 'Username in your token is different' })
+  }
+
   const repo = conn.getRepository(Users)
   const user = await repo.findOne({ username })
 
-  if (!user) {
+  /*if (!user) {
     await conn.close()
     return res
       .status(401)
       .json({ errors: 'Your account not registered in database' })
-  }
+  }*/
 
   user.name = newName
   user.username = newUsername
 
   try {
+    const token = sign(
+      { id: user.id, user: user.username, role: user.role },
+      env.SECRET,
+    )
+
     await repo.save(user)
     await conn.close()
     return res.json({
       msg: 'User updated',
       username: newUsername,
       name: newName,
+      token: `Bearer ${token}`,
     })
   } catch ({ message }) {
     console.log(message)
@@ -133,3 +146,5 @@ export const updateUser = async (req: Request, res: Response) => {
       .json({ error: 'Error on server connection with database' })
   }
 }
+
+export const deleteUser = async (req: Request, res: Response) => {}
