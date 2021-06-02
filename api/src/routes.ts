@@ -7,7 +7,7 @@ import {
   createUser,
   updateUser,
 } from './controllers/UsersController'
-import auth from './etc/auth'
+import auth from './etc/authUser'
 
 const router = Router()
 passport.use(auth)

@@ -11,7 +11,6 @@ export default new Strategy(
   async function (jwtPayload, done) {
     const conn = await createConnection()
     const repo = conn.getRepository(Users)
-
     const user = await repo.findOne(jwtPayload.id)
     await conn.close()
     if (!user) return done(null, false)
