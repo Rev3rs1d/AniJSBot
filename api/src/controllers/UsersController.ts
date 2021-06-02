@@ -8,12 +8,12 @@ import env from '../env'
 import { Users } from '../models/Users'
 
 interface IUser {
-  name: string;
-  password: string;
-  username: string;
+  name: string
+  password: string
+  username: string
 }
 
-const login = async (req: Request, res: Response) => {
+export const loginUser = async (req: Request, res: Response) => {
   const errors = validationResult(req)
 
   if (!errors.isEmpty())
@@ -41,12 +41,15 @@ const login = async (req: Request, res: Response) => {
       error: 'The password is not valid for this user',
     })
 
-  const token = sign({ user: user.username, role: user.role }, env.SECRET)
+  const token = sign(
+    { id: user.id, user: user.username, role: user.role },
+    env.SECRET,
+  )
 
   res.status(201).json({ login: true, token: `Bearer ${token}` })
 }
 
-const create = async (req: Request, res: Response) => {
+export const createUser = async (req: Request, res: Response) => {
   const errors = validationResult(req)
 
   if (!errors.isEmpty())
@@ -66,12 +69,12 @@ const create = async (req: Request, res: Response) => {
       .json({ error: 'User is already registered in the database' })
   }
 
-  const passwordHash = hashSync(password, 8)
+  const passwordHashed = hashSync(password, 8)
 
   try {
     await repo.save({
       name,
-      password: passwordHash,
+      password: passwordHashed,
       username,
       role: 'member',
     })
@@ -91,8 +94,42 @@ const create = async (req: Request, res: Response) => {
   }
 }
 
-export {
-  login,
-  create,
-  //	update
+export const updateUser = async (req: Request, res: Response) => {
+  const errors = validationResult(req)
+
+  if (!errors.isEmpty())
+    return res.status(400).json({
+      errors: errors.array().map(({ msg, param }) => ({ msg, param })),
+    })
+
+  const { username, newUsername, newName } = req.body
+  const conn = await createConnection()
+  const repo = conn.getRepository(Users)
+  const user = await repo.findOne({ username })
+
+  if (!user) {
+    await conn.close()
+    return res
+      .status(401)
+      .json({ errors: 'Your account not registered in database' })
+  }
+
+  user.name = newName
+  user.username = newUsername
+
+  try {
+    await repo.save(user)
+    await conn.close()
+    return res.json({
+      msg: 'User updated',
+      username: newUsername,
+      name: newName,
+    })
+  } catch ({ message }) {
+    console.log(message)
+    await conn.close()
+    return res
+      .status(500)
+      .json({ error: 'Error on server connection with database' })
+  }
 }
