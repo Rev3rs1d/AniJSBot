@@ -1,4 +1,4 @@
-import { createConnection } from 'typeorm'
+import { getRepository } from 'typeorm'
 import { Users } from '../models/Users'
 import { Strategy, ExtractJwt } from 'passport-jwt'
 import env from '../env'
@@ -9,12 +9,11 @@ export default new Strategy(
     secretOrKey: env.SECRET,
   },
   async function (jwtPayload, done) {
-    const conn = await createConnection()
-    const repo = conn.getRepository(Users)
+    const repo = getRepository(Users)
     const user = await repo.findOne(jwtPayload.id, {
       select: ['username', 'role', 'name', 'id'],
     })
-    await conn.close()
+
     if (!user) return done(null, false)
 
     return done(null, { id: jwtPayload })

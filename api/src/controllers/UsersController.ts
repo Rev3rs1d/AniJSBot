@@ -2,7 +2,7 @@ import { compareSync, hashSync } from 'bcrypt'
 import { sign } from 'jsonwebtoken'
 import { validationResult } from 'express-validator'
 import { Request, Response } from 'express'
-import { createConnection } from 'typeorm'
+import { getRepository } from 'typeorm'
 
 import env from '../env'
 import { Users } from '../models/Users'
@@ -22,12 +22,8 @@ export const loginUser = async (req: Request, res: Response) => {
     })
 
   const { username, password } = req.body
-  const conn = await createConnection()
-  const user = await conn.manager.findOne(Users, {
-    username,
-  })
-
-  await conn.close()
+  const repo = getRepository(Users)
+  const user = await repo.findOne({ username })
 
   if (!user)
     return res.status(400).json({
@@ -58,16 +54,13 @@ export const createUser = async (req: Request, res: Response) => {
     })
 
   const { name, username, password }: IUser = req.body
-  const conn = await createConnection()
-  const repo = conn.getRepository(Users)
+  const repo = getRepository(Users)
   const findUsername = await repo.findOne({ username })
 
-  if (findUsername) {
-    await conn.close()
+  if (findUsername)
     return res
       .status(401)
       .json({ error: 'User is already registered in the database' })
-  }
 
   const passwordHashed = hashSync(password, 8)
 
@@ -78,7 +71,6 @@ export const createUser = async (req: Request, res: Response) => {
       username,
       role: 'member',
     })
-    await conn.close()
 
     return res.status(201).json({
       msg: 'user created with success',
@@ -101,16 +93,13 @@ export const updateUser = async (req: Request, res: Response) => {
     })
 
   const { username, newUsername, newName } = req.body
-  const conn = await createConnection()
 
-  if (req.user.username != username) {
-    await conn.close()
+  if (req.user.username != username)
     return res
       .status(401)
       .json({ errors: 'Username in your token is different' })
-  }
 
-  const repo = conn.getRepository(Users)
+  const repo = getRepository(Users)
   const user = await repo.findOne({ username })
 
   /*if (!user) {
@@ -130,7 +119,7 @@ export const updateUser = async (req: Request, res: Response) => {
     )
 
     await repo.save(user)
-    await conn.close()
+
     return res.json({
       msg: 'User updated',
       username: newUsername,
@@ -155,29 +144,23 @@ export const deleteUser = async (req: Request, res: Response) => {
     })
 
   const { username, password } = req.body
-  const conn = await createConnection()
-  const repo = conn.getRepository(Users)
+  const repo = getRepository(Users)
   const user = await repo.findOne({ username })
 
-  if (!user) {
-    await conn.close()
+  if (!user)
     return res.status(400).json({
       error: 'User is not registered',
     })
-  }
 
   const compare = compareSync(password, user.password)
 
-  if (!compare) {
-    await conn.close()
+  if (!compare)
     return res.status(401).json({
       error: 'The password is not valid for this user',
     })
-  }
 
   try {
     await repo.remove(user)
-    await conn.close()
 
     res.json({ msg: 'Account deleted' })
   } catch ({ message }) {
