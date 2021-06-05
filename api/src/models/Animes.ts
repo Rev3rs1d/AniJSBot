@@ -4,7 +4,7 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   OneToMany,
-  ManyToOne
+  ManyToOne,
 } from 'typeorm'
 
 import { Episodes } from './Episodes'
@@ -45,9 +45,9 @@ export class Animes {
   @Column()
   userId: number
 
-  @ManyToOne(() => Users, users => users.animes)
+  @ManyToOne(() => Users, (users) => users.animes)
   user: Users
 
-  @OneToMany(() => Episodes, episode => episode.anime)
+  @OneToMany(() => Episodes, (episode) => episode.anime)
   episodes: Episodes[]
 }

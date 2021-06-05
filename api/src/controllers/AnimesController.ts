@@ -7,13 +7,14 @@ import { getRepository } from 'typeorm'
 
 export const createAnime = async (req: Request, res: Response) => {
   const errors = validationResult(req)
-  
+
   if (!errors.isEmpty())
     return res.status(400).json({
       errors: errors.array().map(({ msg, param }) => ({ msg, param })),
     })
 
-  const { name, description, year, imageUrl, anilistLink, genre, idAnilist } = req.body
+  const { name, description, year, imageUrl, anilistLink, genre, idAnilist } =
+    req.body
 
   const repo = getRepository(Animes)
   const exists = await repo.findOne({ name })
@@ -33,14 +34,39 @@ export const createAnime = async (req: Request, res: Response) => {
       anilist_link: anilistLink,
       episode_count: 0,
       id_anilist: idAnilist,
-      userId: (req.user as Users).id
+      userId: (req.user as Users).id,
     })
 
     res.status(201).json({ msg: 'Anime created with success' })
-    
   } catch ({ message }) {
     console.log(message)
 
     res.status(500).json({ error: 'Error in server' })
   }
+}
+
+export const getAnimes = async (req: Request, res: Response) => {
+  const user = req.user as Users
+  const repo = getRepository(Animes)
+
+  const animes = await repo.find(
+    user.role !== 'admininstrator'
+      ? {
+          select: [
+            'anilist_link',
+            'description',
+            'genre',
+            'name',
+            'year',
+            'id',
+            'episode_count',
+            'id_anilist',
+            'image_url',
+          ],
+          where: { userId: user.id },
+        }
+      : {},
+  )
+
+  res.json({ animes })
 }

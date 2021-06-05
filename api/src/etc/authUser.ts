@@ -17,5 +17,5 @@ export default new Strategy(
     if (!user) return done(null, false)
 
     return done(null, user)
-  }
+  },
 )

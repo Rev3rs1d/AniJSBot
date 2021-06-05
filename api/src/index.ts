@@ -9,7 +9,6 @@ import env from './env'
 const PORT = env.PORT || 666
 const app = express()
 
-
 app.use(express.json())
 
 // adding routes

@@ -3,7 +3,7 @@ import {
   Column,
   PrimaryGeneratedColumn,
   CreateDateColumn,
-  OneToMany
+  OneToMany,
 } from 'typeorm'
 
 import { Animes } from './Animes'
@@ -28,6 +28,6 @@ export class Users {
   @CreateDateColumn()
   create_at: Date
 
-  @OneToMany(() => Animes, animes => animes.user)
+  @OneToMany(() => Animes, (animes) => animes.user)
   animes: Animes[]
 }

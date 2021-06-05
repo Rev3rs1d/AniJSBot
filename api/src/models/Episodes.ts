@@ -27,6 +27,6 @@ export class Episodes {
   @Column()
   animeId!: number
 
-  @ManyToOne(() => Animes, anime => anime.episodes)
+  @ManyToOne(() => Animes, (anime) => anime.episodes)
   anime: Animes
 }
