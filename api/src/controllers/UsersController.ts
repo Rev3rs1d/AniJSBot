@@ -94,20 +94,13 @@ export const updateUser = async (req: Request, res: Response) => {
 
   const { username, newUsername, newName } = req.body
 
-  if (req.user.username != username)
+  if ((req.user as Users).username != username)
     return res
       .status(401)
       .json({ errors: 'Username in your token is different' })
 
   const repo = getRepository(Users)
   const user = await repo.findOne({ username })
-
-  /*if (!user) {
-    await conn.close()
-    return res
-      .status(401)
-      .json({ errors: 'Your account not registered in database' })
-  }*/
 
   user.name = newName
   user.username = newUsername

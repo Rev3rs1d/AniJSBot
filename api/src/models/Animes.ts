@@ -4,8 +4,11 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   OneToMany,
+  ManyToOne
 } from 'typeorm'
+
 import { Episodes } from './Episodes'
+import { Users } from './Users'
 
 @Entity()
 export class Animes {
@@ -39,6 +42,12 @@ export class Animes {
   @CreateDateColumn()
   create_at: Date
 
-  @OneToMany(() => Episodes, (episode) => episode.anime)
+  @Column()
+  userId: number
+
+  @ManyToOne(() => Users, users => users.animes)
+  user: Users
+
+  @OneToMany(() => Episodes, episode => episode.anime)
   episodes: Episodes[]
 }

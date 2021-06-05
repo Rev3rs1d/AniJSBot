@@ -1,27 +1,32 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne } from 'typeorm'
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  ManyToOne,
+} from 'typeorm'
 import { Animes } from './Animes'
 
 @Entity()
 export class Episodes {
+  @PrimaryGeneratedColumn()
+  id: number
 
-	@PrimaryGeneratedColumn()
-	id: number
+  @Column()
+  file_id: string
 
-	@Column()
-	file_id: string
+  @Column()
+  episode_number: number
 
-	@Column()
-	episode_number: number
+  @Column()
+  quality: string
 
-	@Column()
-	quality: string
+  @CreateDateColumn()
+  create_at: Date
 
-	@CreateDateColumn()
-	create_at: Date
-	
-	@Column()
-	animeId!: number
+  @Column()
+  animeId!: number
 
-	@ManyToOne(() => Animes, anime => anime.episodes)
-	anime: Animes
+  @ManyToOne(() => Animes, (anime) => anime.episodes)
+  anime: Animes
 }

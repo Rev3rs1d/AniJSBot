@@ -3,7 +3,10 @@ import {
   Column,
   PrimaryGeneratedColumn,
   CreateDateColumn,
+  OneToMany
 } from 'typeorm'
+
+import { Animes } from './Animes'
 
 @Entity()
 export class Users {
@@ -24,4 +27,7 @@ export class Users {
 
   @CreateDateColumn()
   create_at: Date
+
+  @OneToMany(() => Animes, animes => animes.user)
+  animes: Animes[]
 }
