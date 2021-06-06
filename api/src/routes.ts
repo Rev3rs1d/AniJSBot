@@ -1,7 +1,6 @@
 import passport from 'passport'
 import { Router } from 'express'
 import { body } from 'express-validator'
-//import episodes from './controllers/EpisodesController'
 import {
   loginUser,
   createUser,
@@ -12,6 +11,7 @@ import {
   createAnime,
   getAnimes,
   editAnime,
+  deleteAnime,
 } from './controllers/AnimesController'
 import auth from './middlewares/authUser'
 
@@ -71,15 +71,23 @@ router.get(
   getAnimes,
 )
 
-router.patch('/anime', 
-  body('description').isLength({ min: 5}),
-  body('genre').isLength({ min: 3}),
-  body('name').isLength({ min: 2}),
+router.patch(
+  '/anime',
+  body('description').isLength({ min: 5 }),
+  body('genre').isLength({ min: 3 }),
+  body('name').isLength({ min: 2 }),
   body('year').isNumeric(),
   body('imageUrl').isURL(),
   body('id').isNumeric(),
   passport.authenticate('jwt', { session: false }),
-  editAnime
+  editAnime,
+)
+
+router.delete(
+  '/anime',
+  body('id').isNumeric(),
+  passport.authenticate('jwt', { session: false }),
+  deleteAnime
 )
 
 export default router

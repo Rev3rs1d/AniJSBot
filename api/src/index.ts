@@ -1,7 +1,7 @@
 import 'reflect-metadata'
 import './database'
-
 import express from 'express'
+import { ErrorRequestHandler, Request, Response, NextFunction} from 'express'
 import routes from './routes'
 import env from './env'
 
@@ -16,6 +16,10 @@ app.get('/', (_, res) => {
     message:
       'Esta é uma API para o dashboard do @AniJSBot. Veja a documentação dela em: https://github.com/Lewizh11/AniJsBot',
   })
+})
+
+app.use((err: ErrorRequestHandler, req: Request, res: Response, next: NextFunction) => {
+  res.status(500).json({ error: 'Error in server' })
 })
 
 app.listen(PORT, () => console.log('Server listen: ', PORT))
