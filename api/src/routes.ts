@@ -7,8 +7,13 @@ import {
   createUser,
   updateUser,
   deleteUser,
-} from '../controllers/UsersController'
-import auth from '../etc/authUser'
+} from './controllers/UsersController'
+import {
+  createAnime,
+  getAnimes,
+  editAnime,
+} from './controllers/AnimesController'
+import auth from './middlewares/authUser'
 
 const router = Router()
 passport.use(auth)
@@ -45,6 +50,36 @@ router.delete(
   body('username').isLength({ min: 5 }),
   passport.authenticate('jwt', { session: false }),
   deleteUser,
+)
+
+router.post(
+  '/anime',
+  body('name').isLength({ min: 3 }),
+  body('description').isLength({ min: 5 }),
+  body('year').isNumeric(),
+  body('genre').isLength({ min: 3 }),
+  body('imageUrl').isLength({ min: 5 }),
+  body('anilistLink').isURL(),
+  body('idAnilist').isLength({ min: 1 }),
+  passport.authenticate('jwt', { session: false }),
+  createAnime,
+)
+
+router.get(
+  '/animes',
+  passport.authenticate('jwt', { session: false }),
+  getAnimes,
+)
+
+router.patch('/anime', 
+  body('description').isLength({ min: 5}),
+  body('genre').isLength({ min: 3}),
+  body('name').isLength({ min: 2}),
+  body('year').isNumeric(),
+  body('imageUrl').isURL(),
+  body('id').isNumeric(),
+  passport.authenticate('jwt', { session: false }),
+  editAnime
 )
 
 export default router

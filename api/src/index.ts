@@ -2,18 +2,14 @@ import 'reflect-metadata'
 import './database'
 
 import express from 'express'
-import routesUsers from './routes/routesUsers'
-import routesAnimes from './routes/routesAnimes'
+import routes from './routes'
 import env from './env'
 
 const PORT = env.PORT || 666
 const app = express()
 
 app.use(express.json())
-
-// adding routes
-app.use(routesUsers)
-app.use(routesAnimes)
+app.use(routes)
 
 app.get('/', (_, res) => {
   res.json({

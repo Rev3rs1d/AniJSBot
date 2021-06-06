@@ -14,7 +14,15 @@ export default new Strategy(
       select: ['username', 'role', 'name', 'id'],
     })
 
-    if (!user) return done(null, false)
+    if (!user)
+      return done(
+        {
+          status: false,
+          error:
+            'You not are authenticatered or the anime was not registered by you',
+        },
+        false,
+      )
 
     return done(null, user)
   },
